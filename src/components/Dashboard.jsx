@@ -101,6 +101,19 @@ export default function Dashboard({ fileName, isSample, onLoadFile }) {
     reader.readAsText(file);
   };
 
+  const exportPdf = () => {
+    // Snap animated readouts (gauge, count-ups) to their final values so the
+    // PDF isn't captured mid-animation; the print stylesheet handles the rest
+    // (revealing scroll content, hiding chrome, pagination, dark background).
+    document.dispatchEvent(new Event('force-final'));
+    setTimeout(() => window.print(), 200);
+  };
+
+  const rangeLabel = `${firstTrip.toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+  })} – ${lastTrip.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
+
   return (
     <>
       <div className="bg-orbs">
@@ -135,6 +148,9 @@ export default function Dashboard({ fileName, isSample, onLoadFile }) {
             <span className="file-chip" title={isSample ? 'Sample dataset' : fileName}>
               {isSample ? 'Sample data' : fileName}
             </span>
+            <button className="export-btn" onClick={exportPdf} title="Save this page as a PDF">
+              ⎙ PDF
+            </button>
             <button className="upload-btn" onClick={() => fileInput.current?.click()}>
               ↑ New CSV
             </button>
@@ -150,6 +166,13 @@ export default function Dashboard({ fileName, isSample, onLoadFile }) {
       )}
 
       <div className="app" ref={root}>
+        <div className="print-header">
+          <h1>E-ZPass Insights</h1>
+          <p>
+            Toll account analysis · {rangeLabel}
+            {isSample ? ' · sample data' : ''}
+          </p>
+        </div>
         <Hero />
         <MapSection />
         <Trips />
@@ -233,6 +256,15 @@ export default function Dashboard({ fileName, isSample, onLoadFile }) {
           white-space: nowrap; transition: all 0.18s;
         }
         .upload-btn:hover { background: rgba(79,209,197,0.22); }
+        .export-btn {
+          background: none;
+          border: 1px solid var(--panel-border);
+          color: var(--text-dim);
+          font-family: inherit; font-size: 13px; font-weight: 600;
+          padding: 7px 13px; border-radius: 999px; cursor: pointer;
+          white-space: nowrap; transition: all 0.18s;
+        }
+        .export-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.28); background: rgba(255,255,255,0.05); }
         .upload-toast {
           position: fixed; top: 64px; left: 50%; transform: translateX(-50%);
           z-index: 60; background: rgba(245,101,101,0.14);

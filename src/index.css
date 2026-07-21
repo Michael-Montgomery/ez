@@ -137,3 +137,128 @@ body {
 a { color: var(--accent-2); }
 
 ::selection { background: rgba(79, 209, 197, 0.35); }
+
+/* Print-only cover header, hidden on screen. */
+.print-header { display: none; }
+
+/* ---------------------------------------------------------------------------
+   PDF export (print) styles. Keeps the dark design, forces every animated
+   element visible, hides interactive chrome, and paginates cleanly.
+   --------------------------------------------------------------------------- */
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  /* Force backgrounds/colors to actually print (esp. the dark theme). */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  html,
+  body {
+    background: #0a0e1a !important;
+  }
+
+  /* Hide interactive / on-screen-only chrome. */
+  .topnav,
+  .progress-bar,
+  .bg-orbs,
+  .hero-scroll,
+  .export-btn,
+  .upload-btn,
+  .file-chip,
+  .map-tooltip,
+  .flow-tip,
+  .hm-hover,
+  .filter-bar {
+    display: none !important;
+  }
+
+  .app {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  /* Reveal everything the scroll animations would otherwise keep hidden. */
+  .reveal,
+  [data-stagger],
+  .hero-eyebrow,
+  .hero-line,
+  .hero-sub,
+  .hero-stat {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .route-line {
+    stroke-dashoffset: 0 !important;
+  }
+  .plaza-node {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Compact the hero so it doesn't eat a whole page. */
+  .hero {
+    min-height: auto !important;
+    padding: 0 0 14px !important;
+    break-after: avoid;
+  }
+  .hero-title {
+    font-size: 40px !important;
+  }
+  .hero-stats {
+    margin-top: 22px !important;
+    gap: 26px !important;
+  }
+
+  .section {
+    padding: 16px 0 !important;
+  }
+  .section-title {
+    break-after: avoid;
+  }
+
+  /* Keep individual cards/visuals from splitting across pages. */
+  .panel,
+  .chart-card,
+  .trip,
+  .rec-card,
+  .map-wrap,
+  .flow-wrap,
+  .hero-stat {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Expand anything that scrolls on screen. */
+  .table-wrap,
+  .hm-scroll {
+    overflow: visible !important;
+  }
+  .hm {
+    min-width: 0 !important;
+  }
+  table {
+    font-size: 10px !important;
+  }
+
+  /* Print-only cover header. */
+  .print-header {
+    display: block !important;
+    margin-bottom: 8px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--panel-border);
+  }
+  .print-header h1 {
+    font-size: 26px;
+    font-weight: 850;
+    letter-spacing: -0.02em;
+  }
+  .print-header p {
+    color: var(--text-dim);
+    font-size: 12px;
+    margin-top: 4px;
+  }
+}
